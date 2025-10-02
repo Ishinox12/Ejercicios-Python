@@ -1,6 +1,20 @@
+def read_int(prompt):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Entrada inválida. Por favor ingresa un número entero.")
+
+def read_float(prompt):
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Entrada inválida. Por favor ingresa un número.")
+
 def nivel1():
     while True:
-        print("\n=== Nivel 1: Basicos ===")
+        print("\n=== Nivel 1: Básicos ===")
         print("1. Hola Mundo")
         print("2. Mostrar nombre")
         print("3. Suma de dos numeros")
@@ -20,33 +34,33 @@ def nivel1():
             nombre = input("Nombre: ")
             print("Hola,", nombre)
         elif op == "3":
-            a = float(input("Ingrese el primer numero: "))
-            b = float(input("Ingrese el segundo numero: "))
+            a = read_float("Ingrese el primer numero: ")
+            b = read_float("Ingrese el segundo numero: ")
             print("El resultado de la suma es:", a + b)
         elif op == "4":
-            base = float(input("Ingrese la base del triangulo: "))
-            altura = float(input("Ingrese la altura del triangulo: "))
+            base = read_float("Ingrese la base del triangulo: ")
+            altura = read_float("Ingrese la altura del triangulo: ")
             area = (base * altura) / 2
             print("El area del triangulo es:", area)
         elif op == "5":
-            c = float(input("Ingrese la temperatura en Celsius: "))
+            c = read_float("Ingrese la temperatura en Celsius: ")
             print("Fahrenheit:" , (c * 9/5) + 32)
         elif op == "6":
-            n = int(input("Ingrese un numero: "))
-            print("El numero es par " if n % 2 == 0 else "El numero es impar")
+            n = read_int("Ingrese un numero: ")
+            print("El numero es par" if n % 2 == 0 else "El numero es impar")
         elif op == "7":
-            x = float(input("Ingrese el primer numero: "))
-            y = float(input("Ingrese el segundo numero: "))
-            z = float(input("Ingrese el tercer numero: "))
+            x = read_float("Ingrese el primer numero: ")
+            y = read_float("Ingrese el segundo numero: ")
+            z = read_float("Ingrese el tercer numero: ")
             print("El mayor es:" , max(x, y, z))
         elif op == "8":
-            n = float(input("Ingrese un numero: "))
+            n = read_float("Ingrese un numero: ")
             print("El cuadrado es:", n ** 2)
         elif op == "9":
-            n = int(input("Ingrese un numero: "))
+            n = read_int("Ingrese un numero: ")
             print("Tabla de multiplicar de", n)
             for i in range(1, 11):
-                print(n, "x", i, "=", n * i)
+                print(f"{n} x {i} = {n * i}")
         elif op == "10":
             palabra = input("Ingrese una palabra: ")
             print("La palabra al reves es:", palabra[::-1])
@@ -54,7 +68,7 @@ def nivel1():
             break
         else:
             print("Opcion no valida, intente de nuevo plis .-.")
-            
+
 def nivel2():
     while True:
         print("\n=== Nivel 2: Estructuras de Control ===")
@@ -66,33 +80,42 @@ def nivel2():
         print("16. Series Fibonacci (20 numeros)")
         print("17. Numero primo")
         print("18. Multiplos de 5 (1-100)")
-        print("19. Contar vocales  en palabra")
+        print("19. Contar vocales en palabra")
         print("20. Calculadora")
         print("0. Volver al menu principal")
         op = input("Elige una opcion: por favor:) ")
         
         if op == "11":
-            edad = int(input("Ingrese su edad: "))
+            edad = read_int("Ingrese su edad: ")
             print("Eres mayor de edad" if edad >= 18 else "Eres menor de edad")
         elif op == "12":
-            n = int(input("Ingrese un numero: "))
-            factorial = 1
-            for i in range(1, n + 1):
-                factorial *= i
-            print("El factorial de", n, "es:", factorial)
+            n = read_int("Ingrese un numero (>=0): ")
+            if n < 0:
+                print("No se puede calcular factorial de un número negativo.")
+            else:
+                factorial = 1
+                for i in range(1, n + 1):
+                    factorial *= i
+                print("El factorial de", n, "es:", factorial)
         elif op == "13":
-            suma = 0
+            suma = 0.0
             for i in range(5):
-                suma += float(input(f"Ingrese el numero {i + 1}: "))
+                suma += read_float(f"Ingrese el numero {i + 1}: ")
             print("El promedio es:", suma / 5)
         elif op == "14":
-            n = int(input("Ingrese un numero: "))
-            for i in range(2, n + 1, 2): 
-                print(i, end=" ")
-            print()
+            n = read_int("Ingrese un numero: ")
+            if n >= 2:
+                for i in range(2, n + 1, 2):
+                    print(i, end=" ")
+                print()
+            else:
+                print("No hay pares en ese rango.")
         elif op == "15":
-            letra = input("Ingrese una letra: ").lower()
-            print("Vocal" if letra in 'aeiou' else "Consonante")
+            letra = input("Ingrese una letra: ").strip().lower()
+            if len(letra) != 1 or not letra.isalpha():
+                print("Por favor ingresa solo una letra.")
+            else:
+                print("Vocal" if letra in 'aeiou' else "Consonante")
         elif op == "16":
             a, b = 0, 1
             for i in range(20):
@@ -100,7 +123,7 @@ def nivel2():
                 a, b = b, a + b
             print()
         elif op == "17":
-            n = int(input("Ingrese un numero: "))
+            n = read_int("Ingrese un numero: ")
             es = True
             if n < 2:
                 es = False
@@ -110,36 +133,48 @@ def nivel2():
                         es = False
                         break
             print("Es primo" if es else "No es primo")
+        elif op == "18":
+            # <-- FIX: antes faltaba esta opción
+            multiplos_5 = [x for x in range(1, 101) if x % 5 == 0]
+            print("Multiplos de 5 entre 1 y 100:", multiplos_5)
         elif op == "19":
             palabra = input("Ingrese una palabra: ").lower()
             print("Numero de vocales:", sum(1 for letra in palabra if letra in 'aeiou'))
         elif op == "20":
-            a = float(input("Ingrese el primer numero: "))
-            b = float(input("Ingrese el segundo numero: "))
+            a = read_float("Ingrese el primer numero: ")
+            b = read_float("Ingrese el segundo numero: ")
             op2 = input("Ingrese la operacion (+, -, *, /): ")
-            if op2 == "+": print(a+b)
-            elif op2 == "-": print(a-b)
-            elif op2 == "*": print(a*b)
-            elif op2 == "/": print(a/b if b != 0 else "Error: Division por cero")
-            else: print("Operacion no valida, Intentalo de nuevo plis :) ")
+            if op2 == "+":
+                print(a + b)
+            elif op2 == "-":
+                print(a - b)
+            elif op2 == "*":
+                print(a * b)
+            elif op2 == "/":
+                if b == 0:
+                    print("Error: Division por cero")
+                else:
+                    print(a / b)
+            else:
+                print("Operacion no valida, Intentalo de nuevo plis :) ")
         elif op == "0":
             break
         else:
             print("Opcion no valida, intente de nuevo plis .-.")
-            
+
 def nivel3():
     while True:
         print("\n=== Nivel 3: Listas y Cadenas ===")
         print("21. Mayor de una lista")
         print("22. Ordenar lista")
-        print("23. Eliminar duplicados")
+        print("23. Eliminar duplicados (preservando orden)")
         print("24. Ordenar nombres alfabeticamente")
         print("25. Suma de lista")
         print("26. Unir dos listas")
         print("27. Contar palabras en frase")
         print("28. Palindromo")
         print("29. Cuadrados de 10 primeros numeros")
-        print("30. Segundo mayor de una lista")
+        print("30. Segundo mayor de una lista (robusto)")
         print("0. Volver al menu principal")
         op = input("Elige una opcion: por favor:) ")
         
@@ -152,7 +187,9 @@ def nivel3():
             print("Lista ordenada:", lis)
         elif op == "23":
             lista = [1,2,3,4,4,5]
-            print("Lista sin duplicados:", list(set(lista)))
+            # preserva el orden original
+            sin_dup = list(dict.fromkeys(lista))
+            print("Lista sin duplicados (orden preservado):", sin_dup)
         elif op == "24":
             nombres = ["Carlos", "Ana", "Pedro", "Luis"]
             nombres.sort()
@@ -168,20 +205,24 @@ def nivel3():
             frase = input("Ingrese una frase: ")
             print("Numero de palabras:", len(frase.split()))
         elif op == "28":
-            palabra = input("Ingrese una palabra: ").lower()
+            palabra = input("Ingrese una palabra o frase: ").lower().replace(" ", "")
             print("Es palindromo" if palabra == palabra[::-1] else "No es palindromo")
         elif op == "29":
             print("Cuadrados de los 10 primeros numeros:", [x**2 for x in range(1, 11)])
         elif op == "30":
             lista = [10,20,5,30,25]
-            lista.sort()
-            print("El segundo mayor es:", lista[-2])
+            # forma robusta: eliminar duplicados, comprobar longitud
+            únicos = sorted(set(lista))
+            if len(únicos) < 2:
+                print("No hay segundo mayor (la lista tiene menos de 2 valores distintos).")
+            else:
+                print("El segundo mayor es:", únicos[-2])
         elif op == "0":
             break
         else:
             print("Opcion no valida, intente de nuevo plis .-.")
-            
-#Menu principal
+
+# Menu principal
 def menu():
     while True:
         print("\n=== Menu Principal ===")
@@ -202,3 +243,6 @@ def menu():
             break
         else:
             print("Opcion no valida, intente de nuevo plis .-.")
+            
+if __name__ == "__main__":
+    menu()
