@@ -1,0 +1,3 @@
+numero = float(input("Ingrese un numero real: "))
+raiz_cuarta = numero ** (1/4)
+print("La raiz cuarta del", numero,"es:", raiz_cuarta) 
