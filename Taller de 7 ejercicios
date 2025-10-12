@@ -1,0 +1,126 @@
+import math
+    
+#===== funciones =====
+    
+# Ejercicio 1
+def crear_baraja():
+    valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
+    palos = ['Corazones', 'Diamantes', 'Tréboles', 'Picas']
+    baraja = [(v, p) for v in valores for p in palos]
+    print("Baraja creada con", len(baraja), "cartas.")
+    print(baraja)
+    
+# Ejercicio 2
+def es_poker(cartas):
+    valores = [c[0] for c in cartas]
+    for v in valores:
+        if valores.count(v) == 4:
+            return True
+    return False
+
+def verificar_poker():
+    print("Ejemplo de mano: [('A','corazones'), ('A','picas'), ('A','tréboles'), ('A','diamantes'), ('K','picas')]")
+    cartas = [
+        ('A','corazones'),
+        ('A','picas'),
+        ('A','tréboles'),
+        ('A','diamantes'),
+        ('K','picas')
+    ]
+    print("¿Es poker?:", es_poker(cartas))
+    
+# Ejercicio 3
+def producto_escalar(v1, v2):
+    return sum(a*b for a, b in zip(v1, v2))
+    
+def ejecutar_producto_escalar():
+    v1 = tuple(map(float, input("Ingrese los componentes del primer vector separados por espacio: ").split()))
+    v2 = tuple(map(float, input("Ingrese los componentes del segundo vector separados por espacio: ").split()))
+    print("Producto escalar:", producto_escalar(v1, v2))
+    
+# Ejercicio 4
+def son_ortogonales(v1, v2):
+    return producto_escalar(v1, v2) == 0
+    
+def verificar_ortogonalidad():
+    v1 = tuple(map(float, input("Ingrese el primer vector: ").split()))
+    v2 = tuple(map(float, input("Ingrese el segundo vector: ").split()))
+    print("¿Son ortogonales?", son_ortogonales(v1, v2))
+    
+# Ejercicio 5
+def son_paralelos(v1, v2):
+    try:
+        k = v1[0] / v2[0]
+        return all(v1[i] / v2[i] == k for i in range(1, len(v1)))
+    except ZeroDivisionError:
+        return False
+        
+def verificar_paralelismo():
+    v1 = tuple(map(float, input("Ingrese el primer vector: ").split()))
+    v2 = tuple(map(float, input("Ingrese el segundo vector: ").split()))
+    print("¿Son paralelos?", son_paralelos(v1, v2))
+    
+# Ejercicio 6
+def norma(v):
+    return math.sqrt(sum(x**2 for x in v))
+    
+def calcular_norma():
+    v = tuple(map(float, input("Ingrese el vector: ").split()))
+    print("Norma del vector:", norma(v))
+    
+# Ejercicio 7
+def separar_por_k(lista, k):
+    menores = [x for x in lista if x < k]
+    mayores = [x for x in lista if x > k]
+    iguales = [x for x in lista if x == k]
+    return menores, mayores, iguales
+    
+def multiplos_de_k(lista, k):
+    return [x for x in lista if x % k == 0]
+    
+def ejecutar_ejercicio7():
+    lista = list(map(int, input("Ingrese una lista de números separados por espacio: ").split()))
+    k = int(input("Ingrese un número k: "))
+    menores, mayores, iguales = separar_por_k(lista, k)
+    print("Menores que k:", menores)
+    print("Mayores que k:", mayores)
+    print("Iguales a k:", iguales)
+    print("Múltiplos de k:", multiplos_de_k(lista, k))
+    
+    # ===== Menu Principal =====
+    
+def menu():
+    while True:
+        print("\nMenú de Ejercicios:")
+        print("1. Representar baraja de cartas")
+        print("2. Verificar si una mano es poker")
+        print("3. Calcular producto escalar de dos vectores")
+        print("4. Verificar si dos vectores son ortogonales")
+        print("5. Verificar si dos vectores son paralelos")
+        print("6. Calcular la norma de un vector")
+        print("7. Separar lista por k y encontrar múltiplos de k")
+        print("0. Salir")
+        
+        opcion = input("Seleccione una opción .-. ._. :")
+        
+        if opcion == '1':
+            crear_baraja()
+        elif opcion == '2':
+            verificar_poker()
+        elif opcion == '3':
+            ejecutar_producto_escalar()
+        elif opcion == '4':
+            verificar_ortogonalidad()
+        elif opcion == '5':
+            verificar_paralelismo()
+        elif opcion == '6':
+            calcular_norma()
+        elif opcion == '7':
+            ejecutar_ejercicio7()
+        elif opcion == '0':
+            print("Saliendo del programa gracias por usuarlo sayonara :) .")
+            break
+        else:
+            print("Opción no válida, intente nuevamente por favor escoge algo del menu .-. ._.")
+            # ========= INICIO DEL PROGRAMA =========
+menu()
