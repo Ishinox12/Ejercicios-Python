@@ -1,0 +1,17 @@
+# ejercicio 7 frase invertida
+texto = input("Ingrese una frase: ")
+invertido = ""
+for letra in texto:
+  invertido = letra + invertido
+print("invertido:", invertido)
+
+# ejercicio 8 suma de matrices
+print("Ingrese los valores de la matriz (2x2): ")
+A = [[float(input(f"A[{i}][{j}]: ")) for j in range(2)] for i in range(2)]
+print("\nIngrese los valores de la matriz (2x2): ")
+B = [[float(input(f"B[{i}][{j}]: ")) for j in range(2)] for i in range(2)]
+# sumar las matrices
+C = [[A[i][j] + B[i][j] for j in range(2)] for i in range(2)]
+print("La suma de la matrices es:" )
+for fila in C:
+    print(fila)
