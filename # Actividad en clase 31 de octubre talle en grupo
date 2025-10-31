@@ -67,6 +67,11 @@ else:
     print("El alumno esta reprobado.")
 # Mostrar notas ordenadas
 notas.sort()
+print("Notas ordenadas:", notas)
+
+# Mostrar  lista de alumnos que aprueban
+aprobados = [nota for nota in notas if nota >= 3.0]
+print("La Lista de aprobados es (> 3.0): ", aprobados)
 
 # 6. Programa de productos y precios
 
