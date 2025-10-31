@@ -1,0 +1,98 @@
+# Programa de python con menu interactivo de los ejercicios planteados en clase
+
+def ejercicio1():
+  print("\n=== Ejercicio 1: Listas de frutas ===")
+  frutas = ["manzana", "banana", "pera", "uva", "naranja"]
+  print("Primer elemento:", frutas[0])
+  print("Ultimo elemento:", frutas[-1])
+  frutas.append("mango")
+  print("Lista despues de agregar 'mango':", frutas)
+  frutas.remove("pera")
+  print("Lista despues de eliminar 'pera':", frutas)
+
+def ejercicio2():
+    print("\n=== Ejercicio 2: Listas de numeros del 1 al 10 ===")
+    numeros = list(range(1, 11))
+    print("Suma total:", sum(numeros))
+    print("Numero mas grande:", max(numeros))
+    print("Numero mas pequeño:", min(numeros))
+    print("El Promedio es:", sum(numeros) / len(numeros))
+
+def ejercicio3():
+    print("\n=== Ejercicio 3: Listas de nombres ===")
+    nombres = ["Ana", "Luis", "Sofia", "Pedro", "Carla"]
+    for nombre in nombres:
+        print(nombre)
+    for nombre in nombres:
+        if len(nombre) > 4:
+            print("Los nombres con mas de 4 letras son:", nombre)
+
+def ejercicio4():
+    print("\n=== Ejercicio 4: Listas de edades ===")
+    edades = [12, 17, 18, 20, 15, 22, 13]
+    mayores = [edad for edad in edades if edad >= 18]
+    print("Cantidad de mayores de edad:", len(mayores))
+    print("Lista de mayores de edad:", mayores)
+
+def ejercicio5():
+    print("\n=== Ejercicio 5: Lista de notas ===")
+    notas = [float(input(f"Ingrese la nota { i + 1} ")) for i in range(5)]
+    promedio = sum(notas) / len(notas)
+    print("El promedio de las notas es:", promedio)
+    if promedio >= 3.0:
+        print("El alumno esta aprobado.")
+    else:
+        print("El alumno esta reprobado.")
+    notas.sort()
+    print("Notas ordenadas:", notas)
+
+    aprobados = [nota for nota in notas if nota >= 3.0]
+    print("Cantidad de aprobados:", len(aprobados))
+    print("La Lista de aprobados es (> 3.0): ", aprobados)
+
+def ejercicio6():
+  print("\n=== Ejercicio 6: Programa de productos y precios ===")
+  productos = []
+  precios = []
+  for i in range(5):
+    nombre = input(f"Ingrese el nombre del producto {i + 1}: ")
+    precio = float(input(f"Ingrese el precio del producto { i + 1}: "))
+    productos.append(nombre)
+    precios.append(precio)
+
+  total = sum(precios)
+  print("\nEl Precio total de los productos:", total)
+
+  indice_caro = precios.index(max(precios))
+  indice_barato = precios.index(min(precios))
+  print("El Producto mas barato es:", productos[indice_barato])
+  print("El Producto mas caro es:", productos[indice_caro])
+
+while True:
+    print("\n=== Menu de Ejercicios ===")
+    print("1. Ejercicio 1: Listas de frutas")
+    print("2. Ejercicio 2: Listas de numeros del 1 al 10")
+    print("3. Ejercicio 3: Listas de nombres")
+    print("4. Ejercicio 4: Listas de edades")
+    print("5. Ejercicio 5: Lista de notas")
+    print("6. Ejercicio 6: Programa de productos y precios")
+    print("0. Salir")
+
+    opcion = input("Seleccione una opcion valida plis -.- : ")
+    if opcion == "1":
+      ejercicio1()
+    elif opcion == "2":
+      ejercicio2()
+    elif opcion == "3":
+      ejercicio3()
+    elif opcion == "4":
+      ejercicio4()
+    elif opcion == "5":
+      ejercicio5()
+    elif opcion == "6":
+      ejercicio6()
+    elif opcion == "0":
+      print("Saliendo del programa gracias por usuarlo sayonara :) .")
+      break
+    else:
+      print("Opcion no valida, intente nuevamente por favor escoge algo del menu .-. ._. :")
