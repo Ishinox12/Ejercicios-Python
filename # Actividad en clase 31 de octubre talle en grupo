@@ -1,0 +1,93 @@
+# Actividad en clase 31 de octubre talle en grupo
+
+# 1. Lista de frutas
+
+# Crear lista de frutas
+frutas = ["manzana", "banana", "pera", "uva", "naranja"]
+
+#mostrar primer y ultimo elemento
+print("Primer elemento:", frutas[0])
+print("Ultimo elemento:", frutas[-1])
+
+# Agregar "mango" al final
+frutas.append("mango")
+print("Lista despues de agregar 'mango':", frutas)
+
+# Eliminar "pera"
+frutas.remove("pera")
+print("Lista despues de eliminar 'pera':", frutas)
+
+# 2. Lista de numeros del 1 al 10
+
+numeros = list(range(1, 11))
+
+print("Suma total:", sum(numeros))
+print("Numero mas grande:", max(numeros))
+print("Numero mas pequeño:", min(numeros))
+print("Promedio:", sum(numeros) / len(numeros))
+
+# 3. Lista de nombres
+
+nombres = ["Ana", "Luis", "Sofia", "Pedro", "Carla"]
+
+# Imprimir cada nombre
+for nombre in nombres:
+    print(nombre)
+
+# Mostrar solo los nombres con mas de 4 letras
+for nombre in nombres:
+    if len(nombre) > 4:
+        print("Los nombres con mas de 4 letras :", nombre)
+
+# 4. Lista de edades
+
+edades = [12, 17, 18, 20, 15, 22, 13]
+
+# Crear lista de mayores de edad (>_18)
+mayores = [edad for edad in edades if edad >= 18]
+
+# Imprimir cantidad y lista resultante de los mayores
+print("Cantidad de mayores de edad:", len(mayores))
+print("Lista de mayores de edad:", mayores)
+
+# 5. Lista de notas
+
+notas = [3.5, 4.2, 2.8, 3.0, 4.0]
+
+# Calcular el promedio
+promedio = sum(notas) / len(notas)
+
+# Imprimir el promedio
+print("El promedio de las notas es:", promedio)
+
+# Verificar si es aprobado o reprobado
+if promedio >= 3.0:
+    print("El alumno esta aprobado.")
+else:
+    print("El alumno esta reprobado.")
+# Mostrar notas ordenadas
+notas.sort()
+
+# 6. Programa de productos y precios
+
+productos = []
+precios = []
+
+# Ingresar los datos
+for i in range(5):
+    nombre = input(f"Ingrese el nombre del producto {i + 1}: ")
+    precio = float(input(f"Ingrese el precio del producto { i + 1}: "))
+    productos.append(nombre)
+    precios.append(precio)
+
+# Calcular el total
+total = sum(precios)
+
+# Imprimir el total
+print("\nPrecio total de los productos:", total)
+
+# Productos mas caro y mas barato
+indice_caro = precios.index(max(precios))
+indice_barato = precios.index(min(precios))
+print("Producto mas barato:", productos[indice_barato])
+print("Producto mas caro:", productos[indice_caro])
