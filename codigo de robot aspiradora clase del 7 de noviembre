@@ -1,0 +1,240 @@
+#  Robot aspiradora — Solucion corregida y estable del codigo
+
+# Librerias necesarias
+import random
+import numpy as np
+import pandas as pd
+from dataclasses import dataclass
+from typing import List, Tuple, Optional
+import math
+import enum
+
+
+# Clase Tablero (ambiente)
+
+class Tablero:
+    def __init__(self, size_x: int, size_y: int, leaf_prob: float = 0.5, seed: Optional[int]=None):
+        if seed is not None:
+            random.seed(seed)
+            np.random.seed(seed)
+        self.size_x = size_x
+        self.size_y = size_y
+        # Cada celda tiene una probabilidad del 50% de contener hojas
+        self.grid = [[(random.random() < leaf_prob) for _ in range(size_y)] for _ in range(size_x)]
+
+    def has_leaf(self, x:int, y:int)->bool:
+        return self.grid[x][y]
+
+    def remove_leaf(self, x:int, y:int):
+        self.grid[x][y] = False
+
+    def in_bounds(self, x:int, y:int)->bool:
+        return 0 <= x < self.size_x and 0 <= y < self.size_y
+
+    def total_leaves(self)->int:
+        return sum(1 for i in range(self.size_x) for j in range(self.size_y) if self.grid[i][j])
+
+    def neighbors(self, x:int, y:int)->List[Tuple[int,int]]:
+        res = []
+        for dx,dy in [(1,0),(-1,0),(0,1),(0,-1)]:  # no diagonales
+            nx, ny = x+dx, y+dy
+            if self.in_bounds(nx,ny):
+                res.append((nx,ny))
+        return res
+
+
+
+# Clases de orientacion y el estado
+
+class Orientation(enum.Enum):
+    UP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
+
+@dataclass
+class AgentState:
+    x: int
+    y: int
+    orientation: Orientation
+    energy: int
+    leaves_collected: int = 0
+
+
+
+# Agente Reflexivo
+
+class AgenteReflexivo:
+    def __init__(self, tablero: Tablero, x:int, y:int, energy:int):
+        self.tablero = tablero
+        self.state = AgentState(x,y,Orientation.UP, energy, 0)
+
+    def _consume(self, amount=1)->bool:
+        if self.state.energy >= amount:
+            self.state.energy -= amount
+            return True
+        return False
+
+    def sense_current(self)->bool:
+        # detectar hojas en celda actual (no consume energia)
+        return self.tablero.has_leaf(self.state.x, self.state.y)
+
+    def sense_neighbors(self)->List[Tuple[int,int]]:
+        # detectar hojas en celdas vecinas (consume 1 energia)
+        if not self._consume(1):
+            return []
+        neigh = self.tablero.neighbors(self.state.x, self.state.y)
+        return [p for p in neigh if self.tablero.has_leaf(p[0],p[1])]
+
+    def aspirar(self)->bool:
+        if not self._consume(1): return False
+        if self.tablero.has_leaf(self.state.x, self.state.y):
+            self.tablero.remove_leaf(self.state.x, self.state.y)
+            self.state.leaves_collected += 1
+            return True
+        return False
+
+    def girar(self, angle_deg:int)->bool:
+        if angle_deg not in (90,180,270):
+            raise ValueError("El ángulo debe ser 90, 180 o 270")
+        if not self._consume(1): return False
+        steps = angle_deg // 90
+        new_or = Orientation((self.state.orientation.value + steps) % 4)
+        self.state.orientation = new_or
+        return True
+
+    def avanzar(self)->bool:
+        if not self._consume(1): return False
+        dx, dy = {Orientation.UP:(-1,0), Orientation.DOWN:(1,0),
+                  Orientation.LEFT:(0,-1), Orientation.RIGHT:(0,1)}[self.state.orientation]
+        nx, ny = self.state.x + dx, self.state.y + dy
+        if self.tablero.in_bounds(nx, ny):
+            self.state.x, self.state.y = nx, ny
+            return True
+        return False  # no se mueve si esta fuera del tablero
+
+    def step(self):
+        if self.state.energy <= 0:
+            return False
+        # 1. Si hay hoja en celda actual -> aspirar
+        if self.sense_current():
+            self.aspirar()
+            return True
+        # 2. Si hay hojas cerca -> ir hacia una
+        neighbors_with_leaf = self.sense_neighbors()
+        if neighbors_with_leaf:
+            tx,ty = neighbors_with_leaf[0]
+            dx = tx - self.state.x
+            dy = ty - self.state.y
+            if dx == -1: desired = Orientation.UP
+            elif dx == 1: desired = Orientation.DOWN
+            elif dy == -1: desired = Orientation.LEFT
+            else: desired = Orientation.RIGHT
+            diff = (desired.value - self.state.orientation.value) % 4
+            if diff == 1: self.girar(90)
+            elif diff == 2: self.girar(180)
+            elif diff == 3: self.girar(270)
+            self.avanzar()
+            return True
+        # 3. Si no hay nada -> moverse al azar
+        angle = random.choice([90,180,270,90,270])
+        self.girar(angle)
+        self.avanzar()
+        return True
+
+
+
+# Agente con Estado (memoria)
+
+class AgenteConEstado(AgenteReflexivo):
+    def __init__(self, tablero: Tablero, x:int, y:int, energy:int):
+        super().__init__(tablero,x,y,energy)
+        self.memory = set()
+
+    def sense_neighbors(self)->List[Tuple[int,int]]:
+        found = super().sense_neighbors()
+        for p in found:
+            self.memory.add(p)
+        return found
+
+    def step(self):
+        if self.state.energy <= 0:
+            return False
+        if self.sense_current():
+            self.aspirar()
+            return True
+
+        # El agente usa memoria para ir a hojas vistas antes
+        if self.memory:
+            self.memory = {p for p in self.memory if self.tablero.has_leaf(p[0],p[1])}
+            if self.memory:
+                tx,ty = next(iter(self.memory))
+                dx = tx - self.state.x
+                dy = ty - self.state.y
+                if abs(dx) > 0:
+                    desired = Orientation.DOWN if dx>0 else Orientation.UP
+                else:
+                    desired = Orientation.RIGHT if dy>0 else Orientation.LEFT
+                diff = (desired.value - self.state.orientation.value) % 4
+                if diff == 1: self.girar(90)
+                elif diff == 2: self.girar(180)
+                elif diff == 3: self.girar(270)
+                self.avanzar()
+                return True
+        # Si no hay memoria, usa comportamiento reflexivo
+        return super().step()
+
+
+# Funcion de la simulacion
+
+def run_simulation(agent_class, board_size=(5,5), energy=200, trials=50, leaf_prob=0.5, seed=None):
+    results = []
+    for t in range(trials):
+        tablero = Tablero(board_size[0], board_size[1], leaf_prob=leaf_prob, seed=(None if seed is None else seed + t))
+        start_x = min(board_size[0]-1, board_size[0]//2)
+        start_y = min(board_size[1]-1, board_size[1]//2)
+        agent = agent_class(tablero, start_x, start_y, energy)
+        steps = 0
+        while agent.state.energy > 0:
+            alive = agent.step()
+            steps += 1
+            if tablero.total_leaves() == 0:
+                break
+            if steps > energy * 10:
+                break
+        results.append({
+            'energy_used': energy - agent.state.energy,
+            'leaves_collected': agent.state.leaves_collected,
+            'remaining_energy': agent.state.energy,
+            'steps': steps
+        })
+    df = pd.DataFrame(results)
+    summary = {
+        'avg_energy_used': df['energy_used'].mean(),
+        'avg_leaves_collected': df['leaves_collected'].mean(),
+        'df': df
+    }
+    return summary
+
+
+
+# Ejecucion de las simulaciones (50 veces)
+
+board_size = (6,6)
+energy = 200
+trials = 50
+leaf_prob = 0.5
+
+print("Ejecutando Agente Reflexivo...")
+res_reflex = run_simulation(AgenteReflexivo, board_size=board_size, energy=energy, trials=trials, leaf_prob=leaf_prob)
+
+print("Ejecutando Agente con Estado...")
+res_state = run_simulation(AgenteConEstado, board_size=board_size, energy=energy, trials=trials, leaf_prob=leaf_prob)
+
+print("\nResumen Agente Reflexivo:")
+print(f"Promedio energía consumida: {res_reflex['avg_energy_used']:.2f}")
+print(f"Promedio hojas recogidas: {res_reflex['avg_leaves_collected']:.2f}")
+
+print("\nResumen Agente con Estado:")
+print(f"Promedio energía consumida: {res_state['avg_energy_used']:.2f}")
+print(f"Promedio hojas recogidas: {res_state['avg_leaves_collected']:.2f}")
