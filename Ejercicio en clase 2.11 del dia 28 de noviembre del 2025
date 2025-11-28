@@ -1,0 +1,29 @@
+# Ejercicio 2.11
+
+import pandas as pd
+import random
+
+# 1.Crear la lista aleatoria de 10 numeros enteros de 1 y 100
+lista = [random.randint(1,100) for _ in range(10)]
+print("La lis aleatoria:", lista)
+
+# 2.Se crea la serie con el indice de 1 al 10
+serie = pd.Series(lista, index=range(1,11), name="Numeros aleatorios")
+serie.index.name ="idx"
+
+print("\nSerie con indice de 1 a 10")
+print(serie)
+
+# 3.Generamos los cuadrados de todos los valores
+cuadrados = serie ** 2
+print("\nCuadrados de la serie:")
+print(cuadrados)
+
+# 4.Mostramos los 4 ultimos elementos de la serie de cuadrados
+print("\nUltimos 4 elementos de la serie de cuadrados:")
+print(cuadrados.tail(4))
+
+# 5.mostramos los valores mayores a 500 en forma de lista (sin el indice)
+mayores_500 = cuadrados[cuadrados > 500].tolist()
+print("\nValores mayores a 500 en forma de lista:")
+print(mayores_500)
